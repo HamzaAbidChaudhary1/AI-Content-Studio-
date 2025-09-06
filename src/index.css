@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-slate-50;
+  }
+}
+
+@layer components {
+  .loading-spinner {
+    @apply inline-block w-6 h-6 border-3 border-solid border-sky-500 border-t-transparent rounded-full animate-spin;
+  }
+  
+  .skeleton-loader {
+    @apply bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse rounded-lg;
+  }
+  
+  .image-card {
+    @apply transition-all duration-200 border-2 border-transparent hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .image-card.approved {
+    @apply border-green-500 shadow-green-100;
+  }
+  
+  .image-card.rejected {
+    @apply border-red-500 opacity-70;
+  }
+}
