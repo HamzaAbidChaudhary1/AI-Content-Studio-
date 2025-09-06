@@ -4,6 +4,7 @@ import UserInputForm from './components/Content/UserInputForm';
 import ContentEditor from './components/Content/ContentEditor';
 import SourceArticleCard from './components/Content/SourceArticleCard';
 import MultiImageDisplay from './components/Content/MultiImageDisplay';
+import ContentRefinement from './components/Content/ContentRefinement';
 import LoadingSpinner from './components/UI/LoadingSpinner';
 import { generateContent, approveContent } from './services/n8n';
 
@@ -26,32 +27,90 @@ function App() {
   const [isImageProcessing, setIsImageProcessing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showInputForm, setShowInputForm] = useState(false);
-  const [editedContent, setEditedContent] = useState({ postText: "", hashtags: "" });
+  const [editedContent, setEditedContent] = useState({ 
+    postText: "", 
+    hashtags: "",
+    twitterThread: []
+  });
   const [userInputs, setUserInputs] = useState({ 
     industry: "technology", 
     prompt: "", 
     contentAge: "3" 
   });
+  
+  // New states for iterative editing
+  const [sessionId, setSessionId] = useState(null);
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [isRefining, setIsRefining] = useState(false);
 
   const handleGenerateContent = async () => {
     if (!userInputs.industry || userInputs.prompt.trim().length < 10) return;
+    
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    setSessionId(newSessionId);
     
     setIsGenerating(true);
     setCurrentContent(null);
 
     try {
-      const result = await generateContent(userInputs);
+      const result = await generateContent({
+        ...userInputs,
+        mode: 'initial',
+        sessionId: newSessionId
+      });
+      
       setCurrentContent(result);
       setEditedContent({
-        postText: result.content.linkedin.post,
-        hashtags: result.content.linkedin.hashtags
+        postText: result.content?.linkedin?.post || "",
+        hashtags: result.content?.linkedin?.hashtags || "",
+        twitterThread: result.content?.twitter?.thread || []
       });
+      setConversationHistory([{
+        type: 'initial',
+        prompt: userInputs.prompt,
+        content: result,
+        timestamp: new Date().toISOString()
+      }]);
       setShowInputForm(false);
     } catch (error) {
       console.error('Error generating content:', error);
       alert(`Generation failed: ${error.message}`);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleRefineContent = async (refinementPrompt) => {
+    if (!refinementPrompt.trim() || !sessionId) return;
+    
+    setIsRefining(true);
+    try {
+      const result = await generateContent({
+        mode: 'refine',
+        sessionId,
+        industry: userInputs.industry,
+        prompt: userInputs.prompt,
+        refinementPrompt,
+        previousContent: currentContent
+      });
+      
+      setCurrentContent(result);
+      setEditedContent({
+        postText: result.content?.linkedin?.post || "",
+        hashtags: result.content?.linkedin?.hashtags || "",
+        twitterThread: result.content?.twitter?.thread || []
+      });
+      setConversationHistory(prev => [...prev, {
+        type: 'refinement',
+        prompt: refinementPrompt,
+        content: result,
+        timestamp: new Date().toISOString()
+      }]);
+    } catch (error) {
+      console.error('Error refining content:', error);
+      alert(`Refinement failed: ${error.message}`);
+    } finally {
+      setIsRefining(false);
     }
   };
 
@@ -85,6 +144,43 @@ function App() {
     }
   };
 
+  const handlePublishContent = async () => {
+    try {
+      await approveContent({
+        action: "publish_content",
+        data: {
+          contentId: sessionId,
+          content: editedContent,
+          platforms: ['linkedin', 'twitter']
+        }
+      });
+      alert('Content scheduled for publishing!');
+    } catch (error) {
+      console.error('Error publishing content:', error);
+      alert('Failed to publish content');
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    try {
+      await approveContent({
+        action: "save_draft",
+        data: {
+          contentId: sessionId,
+          content: editedContent,
+          metadata: {
+            industry: userInputs.industry,
+            originalPrompt: userInputs.prompt
+          }
+        }
+      });
+      alert('Content saved as draft!');
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      alert('Failed to save draft');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header showInputForm={showInputForm} setShowInputForm={setShowInputForm} />
@@ -112,6 +208,8 @@ function App() {
                 setEditedContent={setEditedContent}
                 isEditing={isEditing}
                 handleEditMode={() => setIsEditing(!isEditing)}
+                twitterContent={currentContent?.content?.twitter}
+                linkedinContent={currentContent?.content?.linkedin}
               />
             </div>
             
@@ -121,15 +219,27 @@ function App() {
               isProcessing={isImageProcessing}
             />
             
+            <ContentRefinement
+              onRefine={handleRefineContent}
+              isRefining={isRefining}
+              conversationHistory={conversationHistory}
+            />
+            
             <div className="bg-gradient-to-r from-sky-600 to-blue-700 rounded-2xl shadow-xl p-8 text-white">
               <h3 className="font-bold text-2xl mb-4">Ready to Launch Your Content? 🚀</h3>
               <p className="text-sky-100 mb-6">Your AI-crafted content is ready for the world. Choose your action:</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="flex-1 px-6 py-4 bg-white text-sky-600 rounded-xl hover:bg-sky-50 font-bold text-lg transition-all transform hover:scale-105 shadow-lg">
+                <button 
+                  onClick={handlePublishContent}
+                  className="flex-1 px-6 py-4 bg-white text-sky-600 rounded-xl hover:bg-sky-50 font-bold text-lg transition-all transform hover:scale-105 shadow-lg"
+                >
                   <CheckIcon className="inline mr-2" />
                   Publish to All Platforms
                 </button>
-                <button className="px-6 py-4 bg-sky-800/50 backdrop-blur text-white rounded-xl hover:bg-sky-800/70 font-semibold transition-all border border-sky-400/30">
+                <button 
+                  onClick={handleSaveDraft}
+                  className="px-6 py-4 bg-sky-800/50 backdrop-blur text-white rounded-xl hover:bg-sky-800/70 font-semibold transition-all border border-sky-400/30"
+                >
                   Save as Draft
                 </button>
               </div>
@@ -139,7 +249,7 @@ function App() {
         
         {!currentContent && !isGenerating && !showInputForm && (
           <>
-            {/* Hero Section - FIXED GRADIENT */}
+            {/* Hero Section */}
             <div className="relative">
               <div className="relative bg-gradient-to-br from-slate-900 to-sky-900 rounded-3xl p-12 md:p-16 mb-16 text-white overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 opacity-20">
@@ -196,7 +306,7 @@ function App() {
                 </div>
               </div>
 
-              {/* Features Grid - CLEAN BACKGROUND */}
+              {/* Features Grid */}
               <div className="grid md:grid-cols-3 gap-8 mb-16">
                 <div className="group bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-500 hover:scale-105">
                   <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-sky-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -236,8 +346,8 @@ function App() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">One-Click Publishing</h3>
-                  <p className="text-slate-600 leading-relaxed">Review, edit, and approve your content with our intuitive interface. Ready-to-publish posts in minutes, not hours.</p>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">Iterative Refinement</h3>
+                  <p className="text-slate-600 leading-relaxed">ChatGPT-like refinement process. Keep improving your content with follow-up prompts until it's perfect.</p>
                   <div className="mt-6 flex items-center text-green-600 font-semibold group-hover:text-green-700">
                     <span>Learn more</span>
                     <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +357,7 @@ function App() {
                 </div>
               </div>
 
-              {/* Social Proof - SUBTLE GRAY BACKGROUND */}
+              {/* Social Proof */}
               <div className="bg-slate-50 rounded-2xl p-12 mb-16">
                 <div className="text-center mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Trusted by Content Creators Worldwide</h2>
