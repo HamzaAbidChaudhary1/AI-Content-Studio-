@@ -1,60 +1,185 @@
-// src/components/Layout/Header.jsx
-import React from 'react';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-const Header = ({ showInputForm, setShowInputForm }) => {
-  return (
-    <header className="bg-gradient-to-r from-slate-900 via-sky-900 to-slate-900 sticky top-0 z-50 shadow-xl backdrop-blur-lg bg-opacity-90">
-      <div className="absolute inset-0 bg-gradient-to-r from-sky-600/10 to-purple-600/10"></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex justify-between items-center py-5">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-white">AI Content Studio</h1>
-              <p className="text-xs text-sky-300">Professional Content Generation Platform</p>
-            </div>
-          </div>
-          
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Features</a>
-            <a href="#pricing" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Pricing</a>
-            <a href="#about" className="text-white/80 hover:text-white transition-colors text-sm font-medium">About</a>
-            <button 
-              onClick={() => setShowInputForm(!showInputForm)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl hover:from-sky-600 hover:to-blue-700 font-semibold text-sm transition-all transform hover:scale-105 shadow-lg"
-            >
-              {showInputForm ? (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  <span>Close</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span>New Content</span>
-                </>
-              )}
-            </button>
-          </nav>
+@layer base {
+  body {
+    @apply font-sans antialiased bg-white;
+  }
+}
 
-          {/* Mobile menu button */}
-          <button className="md:hidden p-2 text-white">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </header>
-  );
-};
+@layer components {
+  .loading-spinner {
+    @apply inline-block w-6 h-6 border-3 border-solid border-sky-500 border-t-transparent rounded-full animate-spin;
+  }
+  
+  .skeleton-loader {
+    background: linear-gradient(90deg, #f0f2f5 25%, #e6e8eb 50%, #f0f2f5 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  .image-card {
+    @apply transition-all duration-300 border-2 border-transparent hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .image-card.approved {
+    @apply border-green-500 shadow-green-100 shadow-lg;
+  }
+  
+  .image-card.rejected {
+    @apply border-red-500 opacity-70;
+  }
 
-export default Header;
+  .btn-primary {
+    @apply relative overflow-hidden;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    @apply absolute inset-0 bg-white opacity-0 transition-opacity duration-300;
+  }
+  
+  .btn-primary:hover::before {
+    @apply opacity-20;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fade-in {
+  0% { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  0% { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(14, 165, 233, 0.8);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-sky-600 to-purple-600 bg-clip-text text-transparent;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hover-scale {
+  @apply transition-all duration-300 hover:scale-105;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500;
+}
+
+.btn-loading {
+  @apply relative pointer-events-none opacity-75;
+}
+
+.btn-loading::after {
+  content: '';
+  @apply absolute inset-0 flex items-center justify-center;
+  background: inherit;
+}
+
+.glow {
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+}
+
+.glow:hover {
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.7);
+}
+
+.hero-text-shadow {
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
