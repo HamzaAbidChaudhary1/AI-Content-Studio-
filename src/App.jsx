@@ -86,7 +86,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-white">
       <Header showInputForm={showInputForm} setShowInputForm={setShowInputForm} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -139,23 +139,21 @@ function App() {
         
         {!currentContent && !isGenerating && !showInputForm && (
           <>
-            {/* Hero Section */}
-            <div className="relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 blur-3xl"></div>
-              <div className="relative bg-gradient-to-br from-slate-900 via-sky-900 to-slate-900 rounded-3xl p-12 md:p-16 mb-16 text-white overflow-hidden shadow-2xl">
-                <div className="absolute inset-0 opacity-30">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/30 rounded-full blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl"></div>
+            {/* Hero Section - FIXED GRADIENT */}
+            <div className="relative">
+              <div className="relative bg-gradient-to-br from-slate-900 to-sky-900 rounded-3xl p-12 md:p-16 mb-16 text-white overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/20 rounded-full blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
                 </div>
                 
                 <div className="relative max-w-4xl mx-auto text-center">
-                  <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20 animate-pulse">
+                  <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
                     <SparklesIcon />
                     <span className="text-sm font-bold text-sky-100 uppercase tracking-wider">AI-Powered Content Engine</span>
                   </div>
                   
-                  <h1 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent leading-tight animate-fade-in">
+                  <h1 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 text-white leading-tight">
                     Content That Converts,<br />
                     <span className="text-sky-400">In Seconds</span>
                   </h1>
@@ -167,11 +165,10 @@ function App() {
                   <div className="flex flex-col sm:flex-row gap-6 justify-center">
                     <button 
                       onClick={() => setShowInputForm(true)}
-                      className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-2xl font-bold text-lg shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-sky-500/50"
+                      className="group relative inline-flex items-center gap-3 px-10 py-5 bg-sky-500 text-white rounded-2xl font-bold text-lg shadow-2xl transition-all duration-300 transform hover:scale-105 hover:bg-sky-600"
                     >
                       <SparklesIcon />
                       <span>Generate Content Now</span>
-                      <div className="absolute inset-0 rounded-2xl bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
                     </button>
                     <button className="inline-flex items-center gap-3 px-10 py-5 bg-white/10 backdrop-blur-sm text-white rounded-2xl hover:bg-white/20 font-semibold text-lg border border-white/30 transition-all duration-300">
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,9 +196,9 @@ function App() {
                 </div>
               </div>
 
-              {/* Features Grid */}
+              {/* Features Grid - CLEAN BACKGROUND */}
               <div className="grid md:grid-cols-3 gap-8 mb-16">
-                <div className="group bg-white rounded-2xl p-8 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:border-sky-300">
+                <div className="group bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-500 hover:scale-105">
                   <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-sky-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -217,7 +214,7 @@ function App() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-8 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:border-purple-300">
+                <div className="group bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-500 hover:scale-105">
                   <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -233,7 +230,7 @@ function App() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-8 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:border-green-300">
+                <div className="group bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-500 hover:scale-105">
                   <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -250,8 +247,8 @@ function App() {
                 </div>
               </div>
 
-              {/* Social Proof */}
-              <div className="bg-gradient-to-r from-slate-100 to-sky-50 rounded-2xl p-12 mb-16">
+              {/* Social Proof - SUBTLE GRAY BACKGROUND */}
+              <div className="bg-slate-50 rounded-2xl p-12 mb-16">
                 <div className="text-center mb-12">
                   <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Trusted by Content Creators Worldwide</h2>
                   <p className="text-lg text-slate-600 max-w-2xl mx-auto">Join thousands of marketers, entrepreneurs, and creators who've revolutionized their content strategy</p>
@@ -259,33 +256,33 @@ function App() {
                 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                   <div className="text-center">
-                    <div className="text-4xl sm:text-5xl font-black text-transparent bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text mb-2">10x</div>
+                    <div className="text-4xl sm:text-5xl font-black text-sky-600 mb-2">10x</div>
                     <div className="text-sm text-slate-600 font-medium">Faster Content Creation</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl sm:text-5xl font-black text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text mb-2">95%</div>
+                    <div className="text-4xl sm:text-5xl font-black text-purple-600 mb-2">95%</div>
                     <div className="text-sm text-slate-600 font-medium">Time Saved on Research</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl sm:text-5xl font-black text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text mb-2">200%</div>
+                    <div className="text-4xl sm:text-5xl font-black text-green-600 mb-2">200%</div>
                     <div className="text-sm text-slate-600 font-medium">Increase in Engagement</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl sm:text-5xl font-black text-transparent bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text mb-2">5min</div>
+                    <div className="text-4xl sm:text-5xl font-black text-red-600 mb-2">5min</div>
                     <div className="text-sm text-slate-600 font-medium">From Idea to Published</div>
                   </div>
                 </div>
 
                 <div className="mt-12 flex flex-wrap justify-center gap-8">
-                  <img src="https://via.placeholder.com/120x40/e2e8f0/64748b?text=TechCorp" alt="TechCorp" className="h-10 opacity-60 hover:opacity-100 transition-opacity" />
-                  <img src="https://via.placeholder.com/120x40/e2e8f0/64748b?text=StartupX" alt="StartupX" className="h-10 opacity-60 hover:opacity-100 transition-opacity" />
-                  <img src="https://via.placeholder.com/120x40/e2e8f0/64748b?text=MediaPro" alt="MediaPro" className="h-10 opacity-60 hover:opacity-100 transition-opacity" />
-                  <img src="https://via.placeholder.com/120x40/e2e8f0/64748b?text=CloudNet" alt="CloudNet" className="h-10 opacity-60 hover:opacity-100 transition-opacity" />
+                  <span className="text-slate-400 font-semibold">TechCorp</span>
+                  <span className="text-slate-400 font-semibold">StartupX</span>
+                  <span className="text-slate-400 font-semibold">MediaPro</span>
+                  <span className="text-slate-400 font-semibold">CloudNet</span>
                 </div>
               </div>
 
               {/* CTA Section */}
-              <div className="text-center py-16 px-8 bg-gradient-to-r from-sky-600 via-blue-600 to-purple-600 rounded-3xl shadow-2xl">
+              <div className="text-center py-16 px-8 bg-gradient-to-r from-sky-600 to-blue-700 rounded-3xl shadow-2xl">
                 <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                   Ready to 10x Your Content Game?
                 </h2>
